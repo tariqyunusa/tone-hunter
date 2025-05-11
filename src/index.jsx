@@ -1,28 +1,40 @@
 import React from 'react';
-import useDominantColor from './ImageHunter';
+import useVideoDominantColor from './Hooks/VideoHunter';
 
-const ToneHunter = ({ imageUrl }) => {
-  const dominantColor = useDominantColor(imageUrl);
+const VideoColorPreview = ({ videoUrl }) => {
+  const { dominantColor, videoRef } = useVideoDominantColor(videoUrl, 500);
 
   return (
-    <div>
-      <img src={imageUrl} alt="source" style={{ maxWidth: '200px' }} />
-      {dominantColor && (
-        <div>
-          Dominant Color: rgb({dominantColor.join(', ')})
-          <div
-            style={{
-              width: 50,
-              height: 50,
-              backgroundColor: `rgb(${dominantColor.join(', ')})`,
-              marginTop: '10px',
-              border: '1px solid #000',
-            }}
-          />
-        </div>
-      )}
+    <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+      <div>
+        <video
+          ref={videoRef}
+          src={videoUrl}
+          width={400}
+          controls
+          crossOrigin="anonymous"
+        />
+      </div>
+
+      <div>
+        {dominantColor ? (
+          <>
+            <p>Dominant Color: rgb({dominantColor.join(', ')})</p>
+            <div
+              style={{
+                width: 80,
+                height: 80,
+                backgroundColor: `rgb(${dominantColor.join(',')})`,
+                border: '1px solid #000',
+              }}
+            />
+          </>
+        ) : (
+          <p>Loading color…</p>
+        )}
+      </div>
     </div>
   );
 };
 
-export default ToneHunter;
+export default VideoColorPreview;
