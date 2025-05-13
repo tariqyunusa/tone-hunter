@@ -1,40 +1,33 @@
-import React from 'react';
-import useVideoDominantColor from './Hooks/VideoHunter';
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import getAllColors from './Hooks/GetColors';
 
-const VideoColorPreview = ({ videoUrl }) => {
-  const { dominantColor, videoRef } = useVideoDominantColor(videoUrl, 500);
+const Index = () => {
+  const [colors, setColors] = useState([]);
+
+  useEffect(() => {
+    const image = new Image();
+    image.src = '/gr-2.jpg'; 
+    image.crossOrigin = 'Anonymous';
+
+    image.onload = async () => {
+      const result = await getAllColors(image);
+      setColors(result);
+    };
+  }, []);
 
   return (
-    <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-      <div>
-        <video
-          ref={videoRef}
-          src={videoUrl}
-          width={400}
-          controls
-          crossOrigin="anonymous"
-        />
-      </div>
-
-      <div>
-        {dominantColor ? (
-          <>
-            <p>Dominant Color: rgb({dominantColor.join(', ')})</p>
-            <div
-              style={{
-                width: 80,
-                height: 80,
-                backgroundColor: `rgb(${dominantColor.join(',')})`,
-                border: '1px solid #000',
-              }}
-            />
-          </>
-        ) : (
-          <p>Loading color…</p>
-        )}
-      </div>
+    <div>
+      <h1>Dominant Colors</h1>
+      <ul>
+        {colors.slice(0, 10).map(({ color, count }, i) => (
+          <li key={i} style={{ background: `rgb(${color})`, padding: '10px', margin: '5px', color: '#fff' }}>
+            rgb({color}) — {count} pixels
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-export default VideoColorPreview;
+export default Index
