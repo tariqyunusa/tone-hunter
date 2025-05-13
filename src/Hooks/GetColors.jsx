@@ -35,7 +35,7 @@ const convertToHsl = (r, g, b) => {
   return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
 };
 
-const getAllColors = async (image, step = 4 * 10, quantize = true, format = 'rgb') => {
+const useGetAllColors = async (image, step = 4 * 10, quantize = true, format = 'rgb') => {
   return new Promise((resolve) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -82,4 +82,4 @@ const getAllColors = async (image, step = 4 * 10, quantize = true, format = 'rgb
   });
 };
 
-export default getAllColors;
+export default useGetAllColors;
