@@ -1,4 +1,41 @@
-const getAllColors = async (image, step = 4 * 10, quantize = true) => {
+const convertToHex = (r, g, b) => {
+  return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase()}`;
+};
+
+const convertToHsl = (r, g, b) => {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  let l = (max + min) / 2;
+
+  if (max !== min) {
+    const delta = max - min;
+    s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / delta + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / delta + 2;
+        break;
+      case b:
+        h = (r - g) / delta + 4;
+        break;
+      default:
+        break;
+    }
+    h /= 6;
+  }
+
+  return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+};
+
+const getAllColors = async (image, step = 4 * 10, quantize = true, format = 'rgb') => {
   return new Promise((resolve) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -25,7 +62,15 @@ const getAllColors = async (image, step = 4 * 10, quantize = true) => {
         b = Math.round(b / 16) * 16;
       }
 
-      const color = `${r},${g},${b}`;
+      let color;
+      if (format === 'hex') {
+        color = convertToHex(r, g, b);
+      } else if (format === 'hsl') {
+        color = convertToHsl(r, g, b);
+      } else {
+        color = `rgb(${r},${g},${b})`;
+      }
+
       colorMap[color] = (colorMap[color] || 0) + 1;
     }
 

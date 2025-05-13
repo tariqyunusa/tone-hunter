@@ -1,5 +1,43 @@
 import { useState, useRef, useEffect } from "react";
-const useVideoDominantColor = (videoUrl, interval = 1000) => {
+
+const convertToHex = (r, g, b) => {
+  return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase()}`;
+};
+
+const convertToHsl = (r, g, b) => {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  let l = (max + min) / 2;
+
+  if (max !== min) {
+    const delta = max - min;
+    s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / delta + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / delta + 2;
+        break;
+      case b:
+        h = (r - g) / delta + 4;
+        break;
+      default:
+        break;
+    }
+    h /= 6;
+  }
+
+  return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+};
+
+const useVideoDominantColor = (videoUrl, interval = 1000, format = 'rgb') => {
   const [dominantColor, setDominantColor] = useState(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(document.createElement('canvas'));
@@ -41,7 +79,16 @@ const useVideoDominantColor = (videoUrl, interval = 1000) => {
         }
       }
 
-      setDominantColor(dominant);
+      let color;
+      if (format === 'hex') {
+        color = convertToHex(dominant[0], dominant[1], dominant[2]);
+      } else if (format === 'hsl') {
+        color = convertToHsl(dominant[0], dominant[1], dominant[2]);
+      } else {
+        color = `rgb(${dominant[0]},${dominant[1]},${dominant[2]})`; 
+      }
+
+      setDominantColor(color);
     };
 
     const startSampling = () => {
@@ -54,8 +101,9 @@ const useVideoDominantColor = (videoUrl, interval = 1000) => {
       clearInterval(intervalId.current);
       video.removeEventListener('play', startSampling);
     };
-  }, [videoUrl, interval]);
+  }, [videoUrl, interval, format]);
 
   return { dominantColor, videoRef };
 };
-export default useVideoDominantColor
+
+export default useVideoDominantColor;
