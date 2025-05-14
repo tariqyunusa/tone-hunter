@@ -2,6 +2,7 @@
   "name": "tone-hunter",
   "version": "1.0.1",
   "description": "A package for extracting colors from images and videos.",
+  "license": "MIT",
   "type": "module",
   "main": "dist/tone-hunter.umd.js",
   "types": "types/tone-hunter.d.ts",
