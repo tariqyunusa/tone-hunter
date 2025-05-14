@@ -1,6 +1,6 @@
 {
   "name": "tone-hunter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A package for extracting colors from images and videos.",
   "type": "module",
   "main": "dist/tone-hunter.umd.js",
