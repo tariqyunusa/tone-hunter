@@ -1,8 +1,18 @@
 {
   "name": "tone-hunter",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A package for extracting colors from images and videos.",
   "type": "module",
+  "main": "dist/tone-hunter.umd.js",
+  "types": "types/tone-hunter.d.ts",
+  "module": "dist/tone-hunter.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/tone-hunter.es.js",
+      "require": "./dist/tone-hunter.umd.js"
+    }
+  },
+  "files": ["dist"],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
